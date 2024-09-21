@@ -4,8 +4,6 @@ import os
 import string
 import time
 
-translator = Translator()
-
 rawtext_dir = "data\\rawtext"
 flashcard_dir = "data\\flashcards"
 
@@ -29,17 +27,26 @@ def getWordSet(text):
     wordSet = list(set(words))
     return wordSet
 
+def chunkData(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i:i + n]
+
 def createFlashcards(data):
     flashcards = []
     # 15K character Limit and will time out if you hit it too many times
     translations = []
-    try:
-        translations = translator.translate(data, src='ru', dest='en')
-    except:
-        print("timeout hit, sleeping 5 minutes")
-        time.sleep(300) # sleep 300s to reset time out?
-        translations = translator.translate(data, src='ru', dest='en')
-    time.sleep(10) # sleep 10s so you don't time out
+    chunks = list(chunkData(data, 100))
+    for count, chunk in enumerate(chunks):
+        print(count, "out of", len(chunks))
+        #try: 
+        translator = Translator()
+        result = translator.translate(chunk, src='ru', dest='en')
+        translations.extend(result)
+        #except:
+        #    print("timeout hit, retrying")
+        #    translator = Translator()
+        #    translations = translator.translate(chunk, src='ru', dest='en')
     for translation in translations:
         flashcards.append(translation.origin + '|' + translation.text)
     return flashcards
