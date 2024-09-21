@@ -1,5 +1,5 @@
 # epubToAnkiCardsConverter
-Loads an epub into distinct words, translates and exports list into ankipro.net flashcard format.
+Loads an epub into distinct words, translates from Russian to English, and exports list into ankipro.net flashcard format.
 
 https://ankipro.net/
 
