@@ -39,20 +39,16 @@ def createFlashcards(data):
     chunks = list(chunkData(data, 100))
     for count, chunk in enumerate(chunks):
         print(count, "out of", len(chunks))
-        #try: 
         translator = Translator()
         result = translator.translate(chunk, src='ru', dest='en')
         translations.extend(result)
-        #except:
-        #    print("timeout hit, retrying")
-        #    translator = Translator()
-        #    translations = translator.translate(chunk, src='ru', dest='en')
     for translation in translations:
         flashcards.append(translation.origin + '|' + translation.text)
     return flashcards
 
 def loadFilesFromDir(dir):
     files = {}
+    # TODO: get this to sort human readable - currently it's doing ch1, ch10, ch11 ... 
     for filename in listdir(dir):
         if filename.endswith("txt"):
             with open(path.join(dir, filename), "r", encoding="utf-8") as f:
