@@ -32,7 +32,13 @@ def getWordSet(text):
 def createFlashcards(data):
     flashcards = []
     # 15K character Limit and will time out if you hit it too many times
-    translations = translator.translate(data, src='ru', dest='en')
+    translations = []
+    try:
+        translations = translator.translate(data, src='ru', dest='en')
+    except:
+        print("timeout hit, sleeping 5 minutes")
+        time.sleep(300) # sleep 300s to reset time out?
+        translations = translator.translate(data, src='ru', dest='en')
     time.sleep(10) # sleep 10s so you don't time out
     for translation in translations:
         flashcards.append(translation.origin + '|' + translation.text)
