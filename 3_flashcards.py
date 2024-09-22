@@ -38,7 +38,7 @@ def createFlashcards(data):
     translations = []
     chunks = list(chunkData(data, 200))
     for count, chunk in enumerate(chunks):
-        print(count, "out of", len(chunks))
+        print(count + 1, "out of", len(chunks))
         result = []
         try:
             translator = Translator()
