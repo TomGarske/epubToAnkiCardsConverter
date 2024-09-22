@@ -30,13 +30,12 @@ for phrase in phrases:
         if word not in wordlookup.keys():
             wordlookup[word] = phrase.strip()
 
-words = [key + "\n" + wordlookup[key] for key in wordlookup.keys()]
+words = [key + " | " + wordlookup[key] for key in wordlookup.keys()]
 
 translator = Translator()
 translations = translator.translate(words, src='ru', dest='en')
 
 flashcards = []
 for translation in translations:
-    flashcards.append(translation.origin + '|' + translation.text)
-flashcards = ";".join(flashcards)
+    flashcards.append(translation.origin + '\t' + translation.text)
 writeFile(flashcard_dir, "prologue_phrases.txt", flashcards)
