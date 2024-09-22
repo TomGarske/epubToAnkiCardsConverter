@@ -1,3 +1,4 @@
+import os
 from os import path, listdir
 from bs4 import BeautifulSoup
 
@@ -25,5 +26,7 @@ output_dir = "data\\rawtext"
 
 files = loadFilesFromDir(extract_dir)
 for key in files.keys():
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     with open(path.join(output_dir, key + ".txt"), 'w', encoding='utf-8') as fout:
         fout.write("\n".join(files[key]))

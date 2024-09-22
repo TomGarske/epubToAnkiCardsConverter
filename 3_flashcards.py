@@ -3,6 +3,7 @@ from os import path, listdir
 import os
 import string
 import time
+from natsort import natsorted
 
 rawtext_dir = "data\\rawtext"
 flashcard_dir = "data\\flashcards"
@@ -34,13 +35,19 @@ def chunkData(lst, n):
 
 def createFlashcards(data):
     flashcards = []
-    # 15K character Limit and will time out if you hit it too many times
     translations = []
-    chunks = list(chunkData(data, 100))
+    chunks = list(chunkData(data, 200))
     for count, chunk in enumerate(chunks):
         print(count, "out of", len(chunks))
-        translator = Translator()
-        result = translator.translate(chunk, src='ru', dest='en')
+        result = []
+        try:
+            translator = Translator()
+            result = translator.translate(chunk, src='ru', dest='en')
+        except:
+            print("Failed. Sleeping 600s and then retrying.")
+            time.sleep(600)
+            translator = Translator()
+            result = translator.translate(chunk, src='ru', dest='en')
         translations.extend(result)
     for translation in translations:
         flashcards.append(translation.origin + '|' + translation.text)
@@ -48,12 +55,10 @@ def createFlashcards(data):
 
 def loadFilesFromDir(dir):
     files = {}
-    # TODO: get this to sort human readable - currently it's doing ch1, ch10, ch11 ... 
-    for filename in listdir(dir):
-        if filename.endswith("txt"):
-            with open(path.join(dir, filename), "r", encoding="utf-8") as f:
-                text = f.read()
-                files[filename] = text.lower()
+    for filename in natsorted(listdir(dir)):
+        with open(path.join(dir, filename), "r", encoding="utf-8") as f:
+            text = f.read()
+            files[filename] = text.lower()
     return files
 
 def processChapter(text, file, allwords):
